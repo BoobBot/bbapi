@@ -1,0 +1,82 @@
+server {
+    listen       80;
+    server_name  bot.boob.bot bot.boobbot.us;
+    return       301 https://discordapp.com/oauth2/authorize?permissions=8&client_id=285480424904327179&scope=bot;
+}
+server {
+    listen       80;
+    server_name  invite.boob.bot invite.boobbot.us;
+    return       301 https://discord.gg/3M4Ujhy;
+}
+server {
+    listen       80;
+    server_name  paypal.boob.bot paypal.boobbot.us;
+    return       301 https://www.paypal.me/MewBot;
+}
+
+server {
+    listen          80;
+    server_name     cdn.boob.bot cdn.boobbot.us;
+    root            /var/www/bbapi;
+    location ~* \.(jpeg|gif|png|jpg) {
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+        add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+        add_header 'Cache-Control' 'public';
+        add_header 'Cache-Control' 'must-revalidate';
+        expires           7d;
+    }
+    location  / {
+        deny all;
+    }
+}
+
+
+server {
+    listen     80;
+
+    server_name www.boob.bot boob.bot www.boobbot.us boobbot.us;
+    error_log      /srv/bbsite/bb.nginx.err.log;
+
+    location /static {
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        if ($request_method = 'POST') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+            add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+        }
+        if ($request_method = 'GET') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+            add_header 'Access-Control-Expose-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+        }
+        alias /srv/bbsite/static;
+    }
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/srv/bbsite/bbsite.sock;
+    }
+
+
+}

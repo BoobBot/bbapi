@@ -1,0 +1,15 @@
+@keyframes enter-page {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0%);
+  }
+
+  70% {
+    transform: translate(-50%, -55%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
